@@ -1,0 +1,21 @@
+plugin.loaded=Plugin loaded successfully.
+plugin.initialized=SP-FrameworK initialized successfully.
+
+websocket.port=WebSocket port: %d
+
+database.init_failed=Database initialization failed: %s
+database.shutdown=Database connection has been closed.
+
+language.loaded=Language file loaded: %s
+language.not_found=Language file not found: %s
+
+database.initialized=MariaDB + JPA initialized successfully.
+database.connection.success=MariaDB connection successful: %s:%d / %s
+database.driver.not_found=MariaDB JDBC driver could not be found.
+database.jpa.initialize_failed=Failed to initialize Hibernate JPA.
+database.access_denied=Database access denied. User: %s, Database: %s
+database.authentication_failed=MariaDB authentication failed. Check the username or password. User: %s
+database.not_found=Database does not exist: %s
+database.connection_refused=Could not connect to MariaDB server: %s:%d
+database.connection_failed=Failed to connect to MariaDB: %s
+database.shutdown=JPA database shutdown completed.

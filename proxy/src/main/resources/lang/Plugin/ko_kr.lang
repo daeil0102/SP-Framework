@@ -1,0 +1,21 @@
+plugin.loaded=플러그인이 정상적으로 로드되었습니다.
+plugin.initialized=SP-FrameworK 초기화 완료
+
+websocket.port=WebSocket 포트: %d
+
+database.init_failed=DB 초기화 실패: %s
+database.shutdown=데이터베이스 연결을 종료했습니다.
+
+language.loaded=언어 파일을 불러왔습니다: %s
+language.not_found=언어 파일을 찾을 수 없습니다: %s
+
+database.initialized=MariaDB + JPA 초기화 완료
+database.connection.success=MariaDB 연결 성공: %s:%d / %s
+database.driver.not_found=MariaDB JDBC 드라이버를 찾을 수 없습니다.
+database.jpa.initialize_failed=Hibernate JPA 초기화에 실패했습니다.
+database.access_denied=데이터베이스 접근 권한이 없습니다. 사용자: %s, 데이터베이스: %s
+database.authentication_failed=MariaDB 인증에 실패했습니다. 사용자 이름 또는 비밀번호를 확인하세요. 사용자: %s
+database.not_found=데이터베이스가 존재하지 않습니다: %s
+database.connection_refused=MariaDB 서버에 연결할 수 없습니다. %s:%d
+database.connection_failed=MariaDB 연결에 실패했습니다: %s
+database.shutdown=JPA 데이터베이스 종료 완료

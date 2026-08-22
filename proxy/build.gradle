@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+
+    id("xyz.jpenilla.run-velocity") version "2.3.1"
+
+    alias(libs.plugins.shadow)
+}
+
+base {
+    archivesName.set("${project.rootProject.name}")
+    version = "${project.version}-proxy"
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    shadow(libs.jackson.core)
+    shadow(libs.jackson.databind)
+    shadow(libs.mariadb.java.client)
+    shadow(libs.hibernate.core)
+    shadow(libs.java.websocket)
+    shadow(libs.snakeyaml)
+    shadow(project(":JPALib"))
+    shadow(project(":lang"))
+}
+
+tasks {
+    runVelocity {
+        velocityVersion("3.4.0-SNAPSHOT")
+    }
+
+}
+
+def targetJavaVersion = 21
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(targetJavaVersion)
+}
+
+def templateSource = file('src/main/templates')
+def templateDest = layout.buildDirectory.dir('generated/sources/templates')
+
+def generateTemplates = tasks.register('generateTemplates', Copy) { task ->
+    def props = [
+            version: project.version
+    ]
+
+    task.inputs.properties(props)
+
+    task.from(templateSource)
+    task.into(templateDest)
+    task.expand(props)
+}
+
+sourceSets.main.java.srcDir(generateTemplates.map { it.outputs })
+
+tasks.shadowJar {
+    mergeServiceFiles()
+    configurations.add(project.configurations.shadow)
+}
+
+assemble.dependsOn(shadowJar)
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}

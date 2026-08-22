@@ -1,0 +1,10 @@
+database.driver.not_found=MariaDB JDBC driver could not be found.
+database.connection.success=MariaDB connection successful: %s:%s / %s
+database.authentication_failed=MariaDB authentication failed. Please check the username or password. User: %s
+database.access_denied=Database access denied. User: %s, Database: %s
+database.not_found=Database does not exist: %s
+database.connection_refused=Could not connect to MariaDB server: %s:%s
+database.connection_failed=MariaDB connection failed: %s
+database.jpa.initialize_failed=Hibernate JPA initialization failed.
+database.jpa.initialized=MariaDB + JPA initialized successfully.
+database.shutdown=JPA database shutdown complete.

@@ -1,0 +1,10 @@
+database.driver.not_found=MariaDB JDBC 드라이버를 찾을 수 없습니다.
+database.connection.success=MariaDB 연결 성공: %s:%s / %s
+database.authentication_failed=MariaDB 인증에 실패했습니다. 사용자: %s
+database.access_denied=데이터베이스 접근 권한이 없습니다. 사용자: %s, 데이터베이스: %s
+database.not_found=데이터베이스가 존재하지 않습니다: %s
+database.connection_refused=MariaDB 서버에 연결할 수 없습니다. %s:%s
+database.connection_failed=MariaDB 연결에 실패했습니다: %s
+database.jpa.initialize_failed=Hibernate JPA 초기화에 실패했습니다.
+database.jpa.initialized=MariaDB + JPA 초기화 완료
+database.shutdown=JPA 데이터베이스 종료 완료
