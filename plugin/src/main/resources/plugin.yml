@@ -1,4 +1,11 @@
-name: plugin
-version: '1.0-SNAPSHOT'
+name: SP-Framework
+version: '${version}'
 main: net.teujaem.plugin.SPFramework
-api-version: '1.21'
+api-version: '${spigot_api_version}'
+libraries:
+  - com.fasterxml.jackson.core:jackson-core:2.20.1
+  - com.fasterxml.jackson.core:jackson-databind:2.20.1
+  - org.mariadb.jdbc:mariadb-java-client:3.5.3
+  - org.hibernate.orm:hibernate-core:6.6.5.Final
+  - org.java-websocket:Java-WebSocket:1.5.6
+  - org.yaml:snakeyaml:2.5

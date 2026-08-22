@@ -9,10 +9,12 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.teujaem.jpalib.database.DatabaseManager;
 import net.teujaem.lang.Lang;
+import net.teujaem.proxy.config.LoadConfig;
 import net.teujaem.proxy.config.ConfigManager;
-import net.teujaem.proxy.config.PluginConfig;
 import net.teujaem.proxy.database.DatabaseController;
 import net.teujaem.proxy.test.DbTestCommand;
+import net.teujaem.proxy.websoket.WebSocketServer;
+import net.teujaem.proxy.websoket.WebSocketServerApplication;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -30,12 +32,14 @@ public class SPFramework {
     private final Logger logger;
     private final Path dataDirectory;
 
-    private PluginConfig pluginConfig;
+    private ConfigManager configManager;
     private Lang lang;
 
     private DatabaseManager databaseManager;
 
     private DatabaseController databaseController;
+
+    private WebSocketServerApplication webSocketServerApplication;
 
     @Inject
     public SPFramework(
@@ -56,31 +60,24 @@ public class SPFramework {
             ProxyInitializeEvent event
     ) {
         
-        pluginConfig =
-                ConfigManager.load(
+        configManager =
+                LoadConfig.load(
                         dataDirectory,
                         logger
                 );
 
         lang =
                 new Lang(
-                        pluginConfig.getLanguage(),
+                        configManager.getLanguage(),
                         logger
                 );
 
-        logger.info(
-                lang.get(
-                        "websocket.port",
-                        pluginConfig
-                                .getWebsocket()
-                                .getPort()
-                )
-        );
+        webSocketServerApplication = new WebSocketServerApplication(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
 
         databaseController = new DatabaseController();
 
         try {
-            databaseManager = databaseController.initialize(pluginConfig, logger, lang, this.getClass());
+            databaseManager = databaseController.initialize(configManager, logger, lang, this.getClass());
 
             server.getCommandManager()
                     .register(
@@ -127,8 +124,8 @@ public class SPFramework {
         }
     }
 
-    public PluginConfig getConfig() {
-        return pluginConfig;
+    public ConfigManager getConfig() {
+        return configManager;
     }
 
     public Lang getLang() {
@@ -153,5 +150,9 @@ public class SPFramework {
 
     public static SPFramework getInstance() {
         return instance;
+    }
+
+    public WebSocketServerApplication getWebSocketServerApplication() {
+        return webSocketServerApplication;
     }
 }

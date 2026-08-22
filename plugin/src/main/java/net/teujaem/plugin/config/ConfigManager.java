@@ -1,8 +1,9 @@
-package net.teujaem.proxy.config;
+package net.teujaem.plugin.config;
 
-public class PluginConfig {
+public class ConfigManager {
 
     private String language = "ko_kr";
+    private boolean proxy = false;
     private WebsocketConfig websocket = new WebsocketConfig();
     private boolean debug = false;
     private DatabaseConfig database = new DatabaseConfig();
@@ -13,6 +14,14 @@ public class PluginConfig {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public boolean isProxy() {
+        return proxy;
+    }
+
+    public void setProxy(boolean proxy) {
+        this.proxy = proxy;
     }
 
     public WebsocketConfig getWebsocket() {

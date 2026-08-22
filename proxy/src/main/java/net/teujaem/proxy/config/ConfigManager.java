@@ -1,48 +1,112 @@
 package net.teujaem.proxy.config;
 
-import net.teujaem.proxy.SPFramework;
-import org.slf4j.Logger;
-import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 public class ConfigManager {
 
-    public static PluginConfig load(Path dataDirectory, Logger logger) {
-        try {
-            if (!Files.exists(dataDirectory)) {
-                Files.createDirectories(dataDirectory);
-            }
+    private String language = "ko_kr";
+    private WebsocketConfig websocket = new WebsocketConfig();
+    private boolean debug = false;
+    private DatabaseConfig database = new DatabaseConfig();
 
-            Path configPath = dataDirectory.resolve("config.yaml");
+    public String getLanguage() {
+        return language;
+    }
 
-            if (!Files.exists(configPath)) {
-                try (InputStream in = SPFramework.class.getResourceAsStream("/config.yaml")) {
-                    if (in == null) {
-                        logger.error("기본 config.yaml 리소스를 찾을 수 없음");
-                        return new PluginConfig();
-                    }
-                    Files.copy(in, configPath); // dataDirectory로 복사
-                }
-                logger.info("기본 config.yaml 생성됨: " + configPath);
-            }
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-            LoaderOptions options = new LoaderOptions();
-            Constructor constructor = new Constructor(PluginConfig.class, options);
-            Yaml yaml = new Yaml(constructor);
+    public WebsocketConfig getWebsocket() {
+        return websocket;
+    }
 
-            try (InputStream in = Files.newInputStream(configPath)) {
-                PluginConfig pluginConfig = yaml.load(in);
-                return pluginConfig != null ? pluginConfig : new PluginConfig();
-            }
-        } catch (IOException e) {
-            logger.error("설정 로드 실패, 기본값 사용", e);
-            return new PluginConfig();
+    public void setWebsocket(WebsocketConfig websocket) {
+        this.websocket = websocket;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public DatabaseConfig getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(DatabaseConfig database) {
+        this.database = database;
+    }
+
+    public static class WebsocketConfig {
+
+        private String host = "0.0.0.0";
+        private int port = 8080;
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+    }
+
+    public static class DatabaseConfig {
+
+        private String host = "localhost";
+        private int port = 3306;
+        private String name = "velocity_db";
+        private String user = "root";
+        private String password = "";
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUser() {
+            return user;
+        }
+
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 }

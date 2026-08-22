@@ -1,8 +1,8 @@
-package net.teujaem.proxy.database;
+package net.teujaem.plugin.database;
 
 import net.teujaem.jpalib.database.DatabaseManager;
 import net.teujaem.lang.Lang;
-import net.teujaem.proxy.config.ConfigManager;
+import net.teujaem.plugin.config.ConfigManager;
 import org.slf4j.Logger;
 
 public class DatabaseController {

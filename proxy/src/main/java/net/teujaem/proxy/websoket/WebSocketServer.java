@@ -18,23 +18,27 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
 
     public WebSocketServer(String host, int port, Logger logger) {
         super(new InetSocketAddress(host, port));
+        WebSocketServer.logger = logger;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         logger.info("open: " + conn.getRemoteSocketAddress());
-        conn.send("getSessionsId");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         if (SESSIONS_CLIENT_ID.containsValue(conn)) {
-            String key = getKeyUser(conn);
-            SESSIONS_CLIENT_ID.remove(key);
+            String key = getKeyByValue(SESSIONS_CLIENT_ID, conn);
+            if (key != null) {
+                SESSIONS_CLIENT_ID.remove(key);
+            }
         }
         if (SESSIONS_SERVER_ID.containsValue(conn)) {
-            String key = getKeyUser(conn);
-            SESSIONS_SERVER_ID.remove(key);
+            String key = getKeyByValue(SESSIONS_SERVER_ID, conn); // ← 올바른 맵을 탐색
+            if (key != null) {
+                SESSIONS_SERVER_ID.remove(key);
+            }
         }
         logger.info("close: " + reason);
     }
@@ -71,11 +75,49 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             return;
         }
 
-        String eventName = (String) msg.data().get("eventname");
+        if (msg.data() == null) {
+            logger.info("client 메시지에 data 누락: " + msg);
+            return;
+        }
+
+        Object eventNameObject = msg.data().get("eventname");
+        if (!(eventNameObject instanceof String eventName)) {
+            logger.info("client 메시지에 eventname 누락: " + msg);
+            return;
+        }
+
+        if ("setSessionsId".equals(eventName)) {
+            Object idObj = msg.data().get("id");
+            if (idObj instanceof String id) {
+                addSessionsIdUser(conn, id);
+                logger.info("client 세션 등록: user={}, id={}", user, id);
+            } else {
+                logger.info("setSessionsId 메시지에 id 누락: " + msg);
+            }
+        }
     }
 
     private void handleServerMessage(WebSocket conn, PluginMessage msg) {
-        String eventName = (String) msg.data().get("eventname");
+        if (msg.data() == null) {
+            logger.info("server 메시지에 data 누락: " + msg);
+            return;
+        }
+
+        Object eventNameObject = msg.data().get("eventname");
+        if (!(eventNameObject instanceof String eventName)) {
+            logger.info("server 메시지에 eventname 누락: " + msg);
+            return;
+        }
+
+        if ("setSessionsId".equals(eventName)) {
+            Object idObj = msg.data().get("id");
+            if (idObj instanceof String id) {
+                addSessionsIdServer(conn, id);
+                logger.info("server 세션 등록: id={}", id);
+            } else {
+                logger.info("setSessionsId 메시지에 id 누락: " + msg);
+            }
+        }
     }
 
     @Override
@@ -120,8 +162,9 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
         SESSIONS_SERVER_ID.put(id, ws);
     }
 
-    public String getKeyUser(WebSocket ws) {
-        for (Map.Entry<String, WebSocket> entry : SESSIONS_CLIENT_ID.entrySet()) {
+    // 맵을 인자로 받아 재사용 가능하게 변경 (기존 getKeyUser 버그 수정)
+    private String getKeyByValue(Map<String, WebSocket> map, WebSocket ws) {
+        for (Map.Entry<String, WebSocket> entry : map.entrySet()) {
             if (entry.getValue().equals(ws)) {
                 return entry.getKey();
             }
@@ -129,8 +172,11 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
         return null;
     }
 
+    public String getKeyUser(WebSocket ws) {
+        return getKeyByValue(SESSIONS_CLIENT_ID, ws);
+    }
+
     public WebSocket getWSUser(String name) {
         return SESSIONS_CLIENT_ID.get(name);
     }
-
 }
