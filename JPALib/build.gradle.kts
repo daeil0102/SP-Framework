@@ -13,10 +13,10 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.mariadb.java.client)
-    implementation(libs.hibernate.core)
-    implementation(libs.slf4j)
-    implementation(project(":lang"))
+    compileOnly(libs.mariadb.java.client)
+    compileOnly(libs.hibernate.core)
+    compileOnly(libs.slf4j)
+    compileOnly(project(":lang"))
 }
 
 tasks.test {

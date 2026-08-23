@@ -64,6 +64,17 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
         } else {
             handleServerMessage(conn, msg);
         }
+
+        // 받은 메시지 원본 그대로 연결된 모든 클라이언트에게 전송
+        broadcastAll(message);
+    }
+
+    public void broadcastAll(String message) {
+        for (WebSocket ws : getConnections()) {
+            if (ws != null && ws.isOpen()) {
+                ws.send(message);
+            }
+        }
     }
 
     private void handleClientMessage(WebSocket conn, PluginMessage msg) {

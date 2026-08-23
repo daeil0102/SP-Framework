@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.slf4j)
+    compileOnly(libs.slf4j)
 }
 
 tasks.test {

@@ -2,6 +2,9 @@ package net.teujaem.plugin.websoket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.teujaem.plugin.SPFramework;
+import net.teujaem.plugin.api.event.ProxyEvent;
+import org.bukkit.Bukkit;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 
@@ -73,7 +76,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
     }
 
     private void handleClientMessage(PluginMessage msg) {
-        String user = msg.user();
+        UUID user = msg.user();
         String username = msg.username();
 
         if (user == null || username == null) {
@@ -114,7 +117,21 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
             return;
         }
 
+        Object value = msg.data().get("value");
+
         logger.info("Server Event - event={}", eventName);
+
+        Bukkit.getScheduler().runTask(
+                SPFramework.getInstance(),
+                () -> Bukkit.getPluginManager().callEvent(
+                        new ProxyEvent(
+                                msg.name(),
+                                eventName,
+                                value,
+                                msg
+                        )
+                )
+        );
     }
 
     public void sendMessage(PluginMessage message) {

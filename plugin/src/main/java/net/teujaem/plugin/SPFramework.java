@@ -1,7 +1,9 @@
 package net.teujaem.plugin;
 
+import net.teujaem.lang.Lang;
 import net.teujaem.plugin.config.ConfigManager;
 import net.teujaem.plugin.config.LoadConfig;
+import net.teujaem.plugin.database.DatabaseController;
 import net.teujaem.plugin.websoket.WebSocketClient;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ public final class SPFramework extends JavaPlugin {
     private ConfigManager configManager;
     private WebSocketClient webSocketClient;
     private Logger logger;
+    private DatabaseController databaseController;
+    private Lang lang;
 
     @Override
     public void onEnable() {
@@ -38,6 +42,22 @@ public final class SPFramework extends JavaPlugin {
 
         if (configManager.isProxy())
             webSocketClient = new WebSocketClient(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
+
+        lang = new Lang(configManager.getLanguage(), logger);
+
+        databaseController = new DatabaseController();
+        databaseController.initialize(configManager, logger, lang, this.getClass());
     }
 
+    public static SPFramework getInstance() {
+        return instance;
+    }
+
+    public WebSocketClient getWebSocketClient() {
+        return webSocketClient;
+    }
+
+    public DatabaseController getDatabaseController() {
+        return databaseController;
+    }
 }
