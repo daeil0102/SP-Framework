@@ -27,6 +27,12 @@ public class ProxyData {
         webSocketClient.sendMessage(message);
     }
 
+    public static void sendToServer(PluginMessage message) {
+        WebSocketClient webSocketClient = SPFramework.getInstance().getWebSocketClient();
+
+        webSocketClient.sendMessage(message);
+    }
+
     public static void sendToPlayer(String pluginName, String eventName, String value, Player player) {
         WebSocketClient webSocketClient = SPFramework.getInstance().getWebSocketClient();
 
