@@ -102,24 +102,40 @@ public class JpaManager {
      * 신규/기존 엔티티를 모두 안전하게 저장합니다.
      * <p>
      * 기존에는 em.persist(entity)만 호출하여, 이미 DB에 존재하는
-     * PK를 가진 엔티티를 저장하려 할 때 INSERT 충돌
-     * (Duplicate entry ... for key 'PRIMARY')이 발생했습니다.
+     * PK를 가진 엔티티(예: UUID를 앱에서 직접 할당하는 PlayerEntity)를
+     * 저장하려 할 때 INSERT 충돌(Duplicate entry ... for key 'PRIMARY')이
+     * 발생했습니다.
      * <p>
-     * em.contains(entity)로 현재 영속성 컨텍스트가 이미 관리 중인
-     * 엔티티인지 확인하고, 그렇지 않다면(= 새로 생성됐거나 detached
-     * 상태라면) em.merge(entity)를 사용합니다. merge()는 PK 기준으로
-     * DB를 조회해 존재하면 UPDATE, 존재하지 않으면 INSERT를 자동으로
-     * 수행하므로 이 문제가 해결됩니다.
+     * 반대로 @GeneratedValue(strategy = IDENTITY) 등 DB가 PK를
+     * 생성하는 엔티티(예: TestLogEntity)는 저장 전 ID가 null입니다.
+     * 이 경우 persist()를 써야만 INSERT 직후 원본 객체(entity)에
+     * 생성된 ID가 채워집니다. merge()를 쓰면 원본 객체는 건드리지
+     * 않고 별도의 managed 복사본을 반환하므로, 호출부에서 원본
+     * entity.getId()를 읽으면 계속 null이 나오는 문제가 생깁니다.
      * <p>
-     * 주의: merge()는 인자로 받은 detached 인스턴스를 그대로
-     * 영속화하지 않고 새로운 managed 인스턴스를 반환합니다.
-     * 따라서 반드시 반환값을 사용해야 하며, 호출부에서 원래
-     * 넘겼던 entity 참조를 캐시 등에 계속 쓰고 있다면 반환값으로
-     * 교체해주는 것이 안전합니다.
+     * 따라서 엔티티의 PK가 이미 채워져 있는지 여부로 분기합니다.
+     * - PK가 null (DB가 생성하는 신규 엔티티) → persist()
+     *   → 원본 객체에 생성된 ID가 반영됨
+     * - PK가 이미 존재 (앱이 직접 할당, DB에 있을 수도/없을 수도) → merge()
+     *   → 있으면 UPDATE, 없으면 INSERT (upsert)
+     * <p>
+     * 주의: merge() 경로에서는 인자로 받은 detached 인스턴스를 그대로
+     * 영속화하지 않고 새로운 managed 인스턴스를 반환합니다. 저장 이후
+     * 그 엔티티를 계속 참조해서 쓸 계획이라면 반환값으로 교체하세요.
      */
     public <T> T save(T entity) {
 
         return execute(em -> {
+
+            Object id = em.getEntityManagerFactory()
+                    .getPersistenceUnitUtil()
+                    .getIdentifier(entity);
+
+            if (id == null) {
+                // DB가 PK를 생성하는 신규 엔티티 (예: IDENTITY 전략)
+                em.persist(entity);
+                return entity;
+            }
 
             if (em.contains(entity)) {
                 return entity;
@@ -137,6 +153,15 @@ public class JpaManager {
     ) {
 
         return executeAsync(em -> {
+
+            Object id = em.getEntityManagerFactory()
+                    .getPersistenceUnitUtil()
+                    .getIdentifier(entity);
+
+            if (id == null) {
+                em.persist(entity);
+                return entity;
+            }
 
             if (em.contains(entity)) {
                 return entity;
