@@ -1,6 +1,7 @@
 package net.teujaem.proxy.database;
 
 import net.teujaem.jpalib.database.DatabaseManager;
+import net.teujaem.jpalib.jpa.JpaManager;
 import net.teujaem.lang.Lang;
 import net.teujaem.proxy.config.ConfigManager;
 import org.slf4j.Logger;
@@ -9,7 +10,7 @@ public class DatabaseController {
 
     private DatabaseManager databaseManager;
 
-    public DatabaseManager initialize(ConfigManager configManager, Logger logger, Lang lang, Class<?> applicationClass) {
+    public DatabaseManager initialize(ConfigManager configManager, Logger logger, Lang lang) {
         return databaseManager = new DatabaseManager(
                 configManager.getDatabase().getHost(),
                 configManager.getDatabase().getPort(),
@@ -17,9 +18,12 @@ public class DatabaseController {
                 configManager.getDatabase().getUser(),
                 configManager.getDatabase().getPassword(),
                 logger,
-                lang,
-                applicationClass
+                lang
         );
+    }
+
+    public JpaManager createJpaManager(Class<?>... entities) {
+        return databaseManager.createJpaManager(entities);
     }
 
     public DatabaseManager getDatabaseManager() {

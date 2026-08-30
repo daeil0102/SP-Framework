@@ -58,13 +58,15 @@ public class JpaBootstrap {
                 )
         );
 
+        ClassLoader entityClassLoader =
+                resolveClassLoader(entities);
+
         JpaPersistenceUnitInfo persistenceUnitInfo =
                 new JpaPersistenceUnitInfo(
                         "spframework",
                         entities,
                         properties,
-                        Thread.currentThread()
-                                .getContextClassLoader()
+                        entityClassLoader
                 );
 
         return new HibernatePersistenceProvider()
@@ -72,5 +74,15 @@ public class JpaBootstrap {
                         persistenceUnitInfo,
                         properties
                 );
+    }
+
+    private static ClassLoader resolveClassLoader(Class<?>... entities) {
+
+        if (entities.length > 0 && entities[0] != null) {
+            return entities[0].getClassLoader();
+        }
+
+        return Thread.currentThread()
+                .getContextClassLoader();
     }
 }

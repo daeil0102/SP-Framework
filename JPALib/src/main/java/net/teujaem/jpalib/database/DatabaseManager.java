@@ -1,7 +1,6 @@
 package net.teujaem.jpalib.database;
 
 import net.teujaem.jpalib.jpa.JpaConfig;
-import net.teujaem.jpalib.jpa.scanner.JpaEntityScanner;
 import net.teujaem.jpalib.jpa.JpaManager;
 import net.teujaem.lang.Lang;
 import org.slf4j.Logger;
@@ -9,13 +8,19 @@ import org.slf4j.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DatabaseManager {
 
     private final Logger logger;
     private final Lang lang;
 
-    private final JpaManager jpaManager;
+    private final String jdbcUrl;
+    private final String username;
+    private final String password;
+
+    private final List<JpaManager> jpaManagers = new CopyOnWriteArrayList<>();
 
     public DatabaseManager(
             String host,
@@ -24,14 +29,15 @@ public class DatabaseManager {
             String username,
             String password,
             Logger logger,
-            Lang lang,
-            Class<?> applicationClass
+            Lang lang
     ) {
 
         this.logger = logger;
         this.lang = lang;
+        this.username = username;
+        this.password = password;
 
-        String jdbcUrl =
+        this.jdbcUrl =
                 "jdbc:mariadb://"
                         + host
                         + ":"
@@ -64,11 +70,13 @@ public class DatabaseManager {
                 port,
                 database
         );
+    }
 
-        Class<?>[] entities =
-                JpaEntityScanner.scan(
-                        applicationClass
-                );
+    /**
+     * 호출한 플러그인이 넘긴 엔티티 클래스들로 독립된 JpaManager를 생성합니다.
+     * DataBase 인스턴스가 만들어질 때마다 호출됩니다.
+     */
+    public JpaManager createJpaManager(Class<?>... entities) {
 
         logger.info(
                 lang.get(
@@ -93,11 +101,11 @@ public class DatabaseManager {
                         username,
                         password
                 )
-                .ddlAuto("update")
-                .showSql(false)
-                .formatSql(false);
+                        .ddlAuto("update")
+                        .showSql(false)
+                        .formatSql(false);
 
-        this.jpaManager =
+        JpaManager jpaManager =
                 new JpaManager(
                         jpaConfig,
                         entities
@@ -124,6 +132,10 @@ public class DatabaseManager {
                         "database.jpa.initialized"
                 )
         );
+
+        jpaManagers.add(jpaManager);
+
+        return jpaManager;
     }
 
     private void testConnection(
@@ -221,15 +233,13 @@ public class DatabaseManager {
         }
     }
 
-    public JpaManager getJpa() {
-        return jpaManager;
-    }
-
     public void close() {
 
-        if (jpaManager != null) {
+        for (JpaManager jpaManager : jpaManagers) {
             jpaManager.shutdown();
         }
+
+        jpaManagers.clear();
 
         logger.info(
                 lang.get(

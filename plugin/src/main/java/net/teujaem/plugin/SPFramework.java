@@ -31,7 +31,9 @@ public final class SPFramework extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        if (databaseController != null && databaseController.getDatabaseManager() != null) {
+            databaseController.getDatabaseManager().close();
+        }
     }
 
     public void reload() throws Exception {
@@ -46,7 +48,7 @@ public final class SPFramework extends JavaPlugin {
         lang = new Lang(configManager.getLanguage(), logger);
 
         databaseController = new DatabaseController();
-        databaseController.initialize(configManager, logger, lang, this.getClass());
+        databaseController.initialize(configManager, logger, lang);
     }
 
     public static SPFramework getInstance() {

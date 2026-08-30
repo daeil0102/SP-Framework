@@ -1,16 +1,22 @@
 package net.teujaem.plugin.api;
 
+import net.teujaem.jpalib.jpa.JpaManager;
 import net.teujaem.plugin.SPFramework;
 
 import java.util.concurrent.CompletableFuture;
 
 public class DataBase {
 
-    public static CompletableFuture<Boolean> save(Object entity) {
-        return SPFramework.getInstance()
+    private final JpaManager jpaManager;
+
+    public DataBase(Class<?>... entityClasses) {
+        this.jpaManager = SPFramework.getInstance()
                 .getDatabaseController()
-                .getDatabaseManager()
-                .getJpa()
+                .createJpaManager(entityClasses);
+    }
+
+    public CompletableFuture<Boolean> save(Object entity) {
+        return jpaManager
                 .saveAsync(entity)
                 .thenApply(saved -> true)
                 .exceptionally(error -> {
@@ -19,11 +25,8 @@ public class DataBase {
                 });
     }
 
-    public static <T> CompletableFuture<T> find(Class<T> entityClass, Object id) {
-        return SPFramework.getInstance()
-                .getDatabaseController()
-                .getDatabaseManager()
-                .getJpa()
+    public <T> CompletableFuture<T> find(Class<T> entityClass, Object id) {
+        return jpaManager
                 .findAsync(entityClass, id)
                 .exceptionally(error -> {
                     error.printStackTrace();
@@ -31,11 +34,8 @@ public class DataBase {
                 });
     }
 
-    public static CompletableFuture<Boolean> delete(Object entity) {
-        return SPFramework.getInstance()
-                .getDatabaseController()
-                .getDatabaseManager()
-                .getJpa()
+    public CompletableFuture<Boolean> delete(Object entity) {
+        return jpaManager
                 .deleteAsync(entity)
                 .thenApply(v -> true)
                 .exceptionally(error -> {
@@ -43,5 +43,4 @@ public class DataBase {
                     return false;
                 });
     }
-
 }

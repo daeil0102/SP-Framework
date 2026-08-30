@@ -12,8 +12,6 @@ import net.teujaem.lang.Lang;
 import net.teujaem.proxy.config.LoadConfig;
 import net.teujaem.proxy.config.ConfigManager;
 import net.teujaem.proxy.database.DatabaseController;
-import net.teujaem.proxy.test.DbTestCommand;
-import net.teujaem.proxy.websoket.WebSocketServer;
 import net.teujaem.proxy.websoket.WebSocketServerApplication;
 import org.slf4j.Logger;
 
@@ -77,19 +75,7 @@ public class SPFramework {
         databaseController = new DatabaseController();
 
         try {
-            databaseManager = databaseController.initialize(configManager, logger, lang, this.getClass());
-
-            server.getCommandManager()
-                    .register(
-
-                            server.getCommandManager()
-                                    .metaBuilder("dbtest")
-                                    .build(),
-
-                            new DbTestCommand(
-                                    databaseManager
-                            )
-                    );
+            databaseManager = databaseController.initialize(configManager, logger, lang);
 
         } catch (Exception e) {
 
