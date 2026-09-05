@@ -1,9 +1,9 @@
-package net.teujaem.plugin.database;
+package net.teujaem.spFramework.database;
 
 import net.teujaem.jpalib.database.DatabaseManager;
 import net.teujaem.jpalib.jpa.JpaManager;
 import net.teujaem.lang.Lang;
-import net.teujaem.plugin.config.ConfigManager;
+import net.teujaem.spFramework.config.ConfigManager;
 import org.slf4j.Logger;
 
 public class DatabaseController {

@@ -1,7 +1,7 @@
-package net.teujaem.plugin.api;
+package net.teujaem.spFramework.api;
 
 import net.teujaem.jpalib.jpa.JpaManager;
-import net.teujaem.plugin.SPFramework;
+import net.teujaem.spFramework.SPFramework;
 
 import java.util.concurrent.CompletableFuture;
 

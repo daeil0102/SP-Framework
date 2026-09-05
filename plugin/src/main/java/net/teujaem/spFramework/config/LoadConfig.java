@@ -1,4 +1,4 @@
-package net.teujaem.plugin.config;
+package net.teujaem.spFramework.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

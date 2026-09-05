@@ -1,4 +1,4 @@
-package net.teujaem.plugin.config;
+package net.teujaem.spFramework.config;
 
 public class ConfigManager {
 

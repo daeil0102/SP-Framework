@@ -1,6 +1,6 @@
-package net.teujaem.proxy.config;
+package net.teujaem.spFramework.config;
 
-import net.teujaem.proxy.SPFramework;
+import net.teujaem.spFramework.SPFramework;
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;

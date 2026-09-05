@@ -1,9 +1,9 @@
-package net.teujaem.plugin.websoket;
+package net.teujaem.spFramework.websoket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.teujaem.plugin.SPFramework;
-import net.teujaem.plugin.api.event.ProxyEvent;
+import net.teujaem.spFramework.SPFramework;
+import net.teujaem.spFramework.api.event.ProxyEvent;
 import org.bukkit.Bukkit;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;

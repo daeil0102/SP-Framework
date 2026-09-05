@@ -1,6 +1,6 @@
-package net.teujaem.plugin.api.event;
+package net.teujaem.spFramework.api.event;
 
-import net.teujaem.plugin.websoket.PluginMessage;
+import net.teujaem.spFramework.websoket.PluginMessage;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

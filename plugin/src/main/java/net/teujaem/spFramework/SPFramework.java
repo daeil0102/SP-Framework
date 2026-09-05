@@ -1,10 +1,10 @@
-package net.teujaem.plugin;
+package net.teujaem.spFramework;
 
 import net.teujaem.lang.Lang;
-import net.teujaem.plugin.config.ConfigManager;
-import net.teujaem.plugin.config.LoadConfig;
-import net.teujaem.plugin.database.DatabaseController;
-import net.teujaem.plugin.websoket.WebSocketClient;
+import net.teujaem.spFramework.config.ConfigManager;
+import net.teujaem.spFramework.config.LoadConfig;
+import net.teujaem.spFramework.database.DatabaseController;
+import net.teujaem.spFramework.websoket.WebSocketClient;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

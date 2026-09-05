@@ -1,4 +1,4 @@
-package net.teujaem.proxy.websoket;
+package net.teujaem.spFramework.websoket;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

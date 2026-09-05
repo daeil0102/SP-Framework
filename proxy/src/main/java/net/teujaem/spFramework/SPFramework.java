@@ -1,4 +1,4 @@
-package net.teujaem.proxy;
+package net.teujaem.spFramework;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -9,10 +9,10 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.teujaem.jpalib.database.DatabaseManager;
 import net.teujaem.lang.Lang;
-import net.teujaem.proxy.config.LoadConfig;
-import net.teujaem.proxy.config.ConfigManager;
-import net.teujaem.proxy.database.DatabaseController;
-import net.teujaem.proxy.websoket.WebSocketServerApplication;
+import net.teujaem.spFramework.config.LoadConfig;
+import net.teujaem.spFramework.config.ConfigManager;
+import net.teujaem.spFramework.database.DatabaseController;
+import net.teujaem.spFramework.websoket.WebSocketServerApplication;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;

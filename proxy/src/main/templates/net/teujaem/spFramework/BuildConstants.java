@@ -1,4 +1,4 @@
-package net.teujaem.proxy;
+package net.teujaem.spFramework;
 
 // The constants are replaced before compilation
 public class BuildConstants {

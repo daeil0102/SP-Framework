@@ -1,6 +1,6 @@
 name: SP-Framework
 version: '${version}'
-main: net.teujaem.plugin.SPFramework
+main: net.teujaem.spFramework.SPFramework
 api-version: '${spigot_api_version}'
 libraries:
   - com.fasterxml.jackson.core:jackson-core:2.20.1

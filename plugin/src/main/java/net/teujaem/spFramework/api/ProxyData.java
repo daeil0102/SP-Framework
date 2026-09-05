@@ -1,8 +1,8 @@
-package net.teujaem.plugin.api;
+package net.teujaem.spFramework.api;
 
-import net.teujaem.plugin.SPFramework;
-import net.teujaem.plugin.websoket.PluginMessage;
-import net.teujaem.plugin.websoket.WebSocketClient;
+import net.teujaem.spFramework.SPFramework;
+import net.teujaem.spFramework.websoket.PluginMessage;
+import net.teujaem.spFramework.websoket.WebSocketClient;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

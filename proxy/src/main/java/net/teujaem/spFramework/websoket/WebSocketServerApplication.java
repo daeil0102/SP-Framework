@@ -1,4 +1,4 @@
-package net.teujaem.proxy.websoket;
+package net.teujaem.spFramework.websoket;
 
 import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
