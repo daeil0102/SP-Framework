@@ -1,5 +1,8 @@
 package net.teujaem.spFramework.websoket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.teujaem.spFramework.api.event.ProxyEvent;
 import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
 
@@ -9,6 +12,7 @@ public class WebSocketServerApplication {
 
     private WebSocketServer server;
     private volatile boolean started;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public WebSocketServerApplication(String host, int port, Logger logger) {
         this.logger = logger;
@@ -47,6 +51,14 @@ public class WebSocketServerApplication {
         }
     }
 
+    public void addProxyEventListener(ProxyEvent listener) {
+        server.addProxyEventListener(listener);
+    }
+
+    public void removeProxyEventListener(ProxyEvent listener) {
+        server.removeProxyEventListener(listener);
+    }
+
     public void broadcastServer(String message) {
 
         if (!started) {
@@ -54,6 +66,14 @@ public class WebSocketServerApplication {
         }
 
         server.broadcastServer(message);
+    }
+
+    public void sendMessage(PluginMessage message) {
+        try {
+            broadcastServer(mapper.writeValueAsString(message));
+        } catch (JsonProcessingException e) {
+            logger.error("WebSocket 메시지 변환 실패", e);
+        }
     }
 
     public void sendUser(WebSocket ws, String message) {

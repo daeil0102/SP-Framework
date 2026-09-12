@@ -23,8 +23,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:${velocity_version}")
+    annotationProcessor("com.velocitypowered:velocity-api:${velocity_version}")
     shadow(libs.jackson.core)
     shadow(libs.jackson.databind)
     shadow(libs.mariadb.java.client)
@@ -37,7 +37,7 @@ dependencies {
 
 tasks {
     runVelocity {
-        velocityVersion("3.4.0-SNAPSHOT")
+        velocityVersion(velocity_version)
     }
 
 }

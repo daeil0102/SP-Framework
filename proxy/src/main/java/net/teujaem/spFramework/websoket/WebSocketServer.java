@@ -2,19 +2,22 @@ package net.teujaem.spFramework.websoket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.teujaem.spFramework.api.event.ProxyEvent;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.slf4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
 
     private static Logger logger;
     private static final HashMap<String, WebSocket> SESSIONS_CLIENT_ID = new HashMap<>();
-    private static final HashMap<String, WebSocket> SESSIONS_SERVER_ID = new HashMap<>();
+    private static final HashMap<String, WebSocket> SESSIONS_SERVER_ID = new HashMap<>();private final List<ProxyEvent> listeners = new CopyOnWriteArrayList<>();
 
     public WebSocketServer(String host, int port, Logger logger) {
         super(new InetSocketAddress(host, port));
@@ -56,7 +59,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             logger.info("잘못된 메시지 형식: " + message);
             return;
         }
-
+        fireProxyEvent(msg);
         logger.info(msg.toString());
 
         if (msg.isFromClient()) {
@@ -78,7 +81,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
     }
 
     private void handleClientMessage(WebSocket conn, PluginMessage msg) {
-        String user = msg.user();
+        String user = String.valueOf(msg.user());
         String username = msg.username();
 
         if (user == null || username == null) {
@@ -189,5 +192,23 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
 
     public WebSocket getWSUser(String name) {
         return SESSIONS_CLIENT_ID.get(name);
+    }
+
+    public void addProxyEventListener(ProxyEvent listener) {
+        listeners.add(listener);
+    }
+
+    public void removeProxyEventListener(ProxyEvent listener) {
+        listeners.remove(listener);
+    }
+
+    private void fireProxyEvent(PluginMessage msg) {
+        for (ProxyEvent listener : listeners) {
+            try {
+                listener.onProxyEvent(msg);
+            } catch (Exception e) {
+                logger.error("ProxyEvent 리스너 처리 중 오류: " + e.getMessage());
+            }
+        }
     }
 }
