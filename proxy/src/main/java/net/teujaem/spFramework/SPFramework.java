@@ -120,7 +120,7 @@ public class SPFramework {
                         logger
                 );
 
-        webSocketServerApplication = new WebSocketServerApplication(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
+        webSocketServerApplication = new WebSocketServerApplication(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger, this);
 
         databaseController = new DatabaseController();
 

@@ -2,6 +2,8 @@ package net.teujaem.spFramework.websoket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.teujaem.spFramework.SPFramework;
+import net.teujaem.spFramework.api.event.FrameworkInitializeEvent;
 import net.teujaem.spFramework.api.event.ProxyEvent;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -9,19 +11,19 @@ import org.slf4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
 
     private static Logger logger;
+    private static SPFramework plugin;
     private static final HashMap<String, WebSocket> SESSIONS_CLIENT_ID = new HashMap<>();
-    private static final HashMap<String, WebSocket> SESSIONS_SERVER_ID = new HashMap<>();private final List<ProxyEvent> listeners = new CopyOnWriteArrayList<>();
+    private static final HashMap<String, WebSocket> SESSIONS_SERVER_ID = new HashMap<>();
 
-    public WebSocketServer(String host, int port, Logger logger) {
+    public WebSocketServer(String host, int port, Logger logger, SPFramework plugin) {
         super(new InetSocketAddress(host, port));
         WebSocketServer.logger = logger;
+        WebSocketServer.plugin = plugin;
     }
 
     @Override
@@ -60,6 +62,10 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             return;
         }
         logger.info(msg.toString());
+
+        plugin.getServer().getEventManager().fire(
+                new ProxyEvent(msg)
+        );
 
         if (msg.isFromClient()) {
             handleClientMessage(conn, msg);

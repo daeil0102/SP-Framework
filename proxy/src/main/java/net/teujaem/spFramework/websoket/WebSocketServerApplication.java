@@ -2,6 +2,7 @@ package net.teujaem.spFramework.websoket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.teujaem.spFramework.SPFramework;
 import net.teujaem.spFramework.api.event.ProxyEvent;
 import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
@@ -9,13 +10,15 @@ import org.slf4j.Logger;
 public class WebSocketServerApplication {
 
     private final Logger logger;
+    private final SPFramework plugin;
 
     private WebSocketServer server;
     private volatile boolean started;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public WebSocketServerApplication(String host, int port, Logger logger) {
+    public WebSocketServerApplication(String host, int port, Logger logger, SPFramework plugin) {
         this.logger = logger;
+        this.plugin = plugin;
         start(host, port);
     }
 
@@ -24,7 +27,8 @@ public class WebSocketServerApplication {
         server = new WebSocketServer(
                 host,
                 port,
-                logger
+                logger,
+                plugin
         );
 
         try {
