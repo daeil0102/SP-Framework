@@ -51,14 +51,6 @@ public class WebSocketServerApplication {
         }
     }
 
-    public void addProxyEventListener(ProxyEvent listener) {
-        server.addProxyEventListener(listener);
-    }
-
-    public void removeProxyEventListener(ProxyEvent listener) {
-        server.removeProxyEventListener(listener);
-    }
-
     public void broadcastServer(String message) {
 
         if (!started) {

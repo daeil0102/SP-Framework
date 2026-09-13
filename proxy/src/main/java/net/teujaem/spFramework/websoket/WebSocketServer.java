@@ -59,7 +59,6 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             logger.info("잘못된 메시지 형식: " + message);
             return;
         }
-        fireProxyEvent(msg);
         logger.info(msg.toString());
 
         if (msg.isFromClient()) {
@@ -194,21 +193,4 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
         return SESSIONS_CLIENT_ID.get(name);
     }
 
-    public void addProxyEventListener(ProxyEvent listener) {
-        listeners.add(listener);
-    }
-
-    public void removeProxyEventListener(ProxyEvent listener) {
-        listeners.remove(listener);
-    }
-
-    private void fireProxyEvent(PluginMessage msg) {
-        for (ProxyEvent listener : listeners) {
-            try {
-                listener.onProxyEvent(msg);
-            } catch (Exception e) {
-                logger.error("ProxyEvent 리스너 처리 중 오류: " + e.getMessage());
-            }
-        }
-    }
 }

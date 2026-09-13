@@ -9,6 +9,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.teujaem.jpalib.database.DatabaseManager;
 import net.teujaem.lang.Lang;
+import net.teujaem.spFramework.api.event.FrameworkInitializeEvent;
 import net.teujaem.spFramework.config.LoadConfig;
 import net.teujaem.spFramework.config.ConfigManager;
 import net.teujaem.spFramework.database.DatabaseController;
@@ -58,43 +59,7 @@ public class SPFramework {
             ProxyInitializeEvent event
     ) {
         
-        configManager =
-                LoadConfig.load(
-                        dataDirectory,
-                        logger
-                );
-
-        lang =
-                new Lang(
-                        configManager.getLanguage(),
-                        logger
-                );
-
-        webSocketServerApplication = new WebSocketServerApplication(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
-
-        databaseController = new DatabaseController();
-
-        try {
-            databaseManager = databaseController.initialize(configManager, logger, lang);
-
-        } catch (Exception e) {
-
-            logger.error(
-                    lang.get(
-                            "database.init_failed",
-                            e.getMessage()
-                    ),
-                    e
-            );
-
-            databaseManager = null;
-        }
-
-        logger.info(
-                lang.get(
-                        "plugin.initialized"
-                )
-        );
+        reload();
     }
 
     @Subscribe
@@ -141,4 +106,49 @@ public class SPFramework {
     public WebSocketServerApplication getWebSocketServerApplication() {
         return webSocketServerApplication;
     }
+
+    private void reload() {
+        configManager =
+                LoadConfig.load(
+                        dataDirectory,
+                        logger
+                );
+
+        lang =
+                new Lang(
+                        configManager.getLanguage(),
+                        logger
+                );
+
+        webSocketServerApplication = new WebSocketServerApplication(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
+
+        databaseController = new DatabaseController();
+
+        try {
+            databaseManager = databaseController.initialize(configManager, logger, lang);
+
+        } catch (Exception e) {
+
+            logger.error(
+                    lang.get(
+                            "database.init_failed",
+                            e.getMessage()
+                    ),
+                    e
+            );
+
+            databaseManager = null;
+        }
+
+        logger.info(
+                lang.get(
+                        "plugin.initialized"
+                )
+        );
+
+        server.getEventManager().fire(
+                new FrameworkInitializeEvent(this)
+        );
+    }
+
 }
