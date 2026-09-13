@@ -15,15 +15,15 @@ import java.util.Map;
 
 public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
 
-    private static Logger logger;
-    private static SPFramework plugin;
+    private final Logger logger;
+    private final SPFramework plugin;
     private static final HashMap<String, WebSocket> SESSIONS_CLIENT_ID = new HashMap<>();
     private static final HashMap<String, WebSocket> SESSIONS_SERVER_ID = new HashMap<>();
 
     public WebSocketServer(String host, int port, Logger logger, SPFramework plugin) {
         super(new InetSocketAddress(host, port));
-        WebSocketServer.logger = logger;
-        WebSocketServer.plugin = plugin;
+        this.logger = logger;
+        this.plugin = plugin;
     }
 
     @Override
@@ -61,7 +61,8 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer {
             logger.info("잘못된 메시지 형식: " + message);
             return;
         }
-        logger.info(msg.toString());
+
+        if (plugin.getConfig().isDebug()) logger.info(msg.toString());
 
         plugin.getServer().getEventManager().fire(
                 new ProxyEvent(msg)

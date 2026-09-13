@@ -16,13 +16,15 @@ import java.util.UUID;
 public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     private final Logger logger;
+    private final SPFramework plugin;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String sessionId;
 
-    public WebSocketClient(String host, int port, Logger logger) throws Exception {
+    public WebSocketClient(String host, int port, Logger logger, SPFramework plugin) throws Exception {
         super(new URI("ws://" + host + ":" + port + "/ws"));
 
         this.logger = logger;
+        this.plugin = plugin;
 
         this.sessionId = UUID.randomUUID()
                 .toString()
@@ -56,7 +58,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
             return;
         }
 
-        logger.info("WebSocket message: {}", message);
+        if (plugin.getConfigManager().isDebug()) logger.info("WebSocket message: {}", message);
 
         try {
             PluginMessage msg = mapper.readValue(
@@ -119,7 +121,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
         Object value = msg.data().get("value");
 
-        logger.info("Server Event - event={}", eventName);
+        if (plugin.getConfigManager().isDebug()) logger.info("Server Event - event={}", eventName);
 
         Bukkit.getScheduler().runTask(
                 SPFramework.getInstance(),

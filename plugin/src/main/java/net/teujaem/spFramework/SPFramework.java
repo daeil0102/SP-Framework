@@ -43,7 +43,7 @@ public final class SPFramework extends JavaPlugin {
         configManager = LoadConfig.load(this);
 
         if (configManager.isProxy())
-            webSocketClient = new WebSocketClient(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger);
+            webSocketClient = new WebSocketClient(configManager.getWebsocket().getHost(), configManager.getWebsocket().getPort(), logger, this);
 
         lang = new Lang(configManager.getLanguage(), logger);
 
@@ -61,5 +61,9 @@ public final class SPFramework extends JavaPlugin {
 
     public DatabaseController getDatabaseController() {
         return databaseController;
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 }
