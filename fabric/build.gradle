@@ -20,6 +20,16 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.minecraft_version}+build.1:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    include(implementation(libs.jackson.core.get()))
+    include(implementation(libs.jackson.databind.get()))
+    include(implementation(libs.mariadb.java.client.get()))
+    include(implementation(libs.hibernate.core.get()))
+    include(implementation(libs.java.websocket.get()))
+    include(implementation(libs.snakeyaml.get()))
+
+    include(implementation(project(":JPALib")))
+    include(implementation(project(":lang")))
 }
 
 processResources {

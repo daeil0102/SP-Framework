@@ -1,4 +1,4 @@
-package net.teujaem.fabric.client;
+package net.teujaem.spFramework.client;
 
 import net.fabricmc.api.ClientModInitializer;
 
