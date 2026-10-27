@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fabric",
+  "id": "spframework",
   "version": "${version}",
 
-  "name": "fabric",
+  "name": "SP-Framework",
   "description": "",
   "authors": [],
   "contact": {},
@@ -14,13 +14,13 @@
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
-      "net.teujaem.fabric.client.SPFrameworkDataGenerator"
+      "net.teujaem.spFramework.client.SPFrameworkDataGenerator"
     ],
     "client": [
-      "net.teujaem.fabric.client.SPFrameworkClient"
+      "net.teujaem.spFramework.client.SPFrameworkClient"
     ],
     "main": [
-      "net.teujaem.fabric.SPFramework"
+      "net.teujaem.spFramework.SPFramework"
     ]
   },
 
